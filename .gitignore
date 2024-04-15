@@ -1,0 +1,31 @@
+# ingonring this files
+
+variables.pkr.hcl
+variables.json
+
+*.tfstate
+*.tfstate.*.backup
+*.tfstate.backup
+*.tfstate.backup2
+*.tfvars
+.terraform/
+
+terraform.tfvars
+*.terraform.lock.hcl
+*.terraform.tfstate.lock.info
+.terraform.lock.hcl
+
+# ansible hw 9
+*.retry
+
+# ansible hw 10
+#jdauphant.nginx
+vault.key
+
+# ansible hw 11
+.vagrant/
+*.log
+*.pyc
+.molecule
+.cache
+.pytest_cache
