@@ -1,0 +1,28 @@
+---
+- name: start reddit
+  hosts: all
+  become: true
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  tasks:
+  - name: adding ubuntu to docker group
+    user:
+      name: ubuntu
+      groups: docker
+      append: yes
+  - name: install pip
+    apt:
+      name: python3-pip
+      state: latest
+  - name: Install Docker Module for Python
+    pip:
+      name: docker
+      executable: pip3
+  - name: start docker
+    docker_container:
+      name: reddit
+      image: nighte1f/otus-reddit:1.0
+      ports:
+        - "9292:9292"
+      state: started
+      restart: yes
