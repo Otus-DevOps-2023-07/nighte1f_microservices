@@ -1,9 +1,7 @@
-FROM alpine:3.16
-
-RUN apk update --no-cache \
-    && apk add --no-cache ruby-full ruby-dev build-base \
-    && gem install bundler -v 1.17.2 \
-    && rm -rf /var/cache/apk/*
+FROM ubuntu:16.04
+RUN apt-get update \
+    && apt-get install -y ruby-full ruby-dev build-essential \
+    && gem install bundler -v 1.17.2 --no-ri --no-rdoc
 
 ENV APP_HOME /app
 RUN mkdir $APP_HOME
@@ -11,7 +9,6 @@ RUN mkdir $APP_HOME
 WORKDIR $APP_HOME
 ADD Gemfile* $APP_HOME/
 RUN bundle update --bundler
-
 ADD . $APP_HOME
 
 ENV POST_SERVICE_HOST post
