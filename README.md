@@ -1,6 +1,68 @@
 # nighte1f_microservices
 nighte1f microservices repository
 
+# Homework 14
+- Создана новая ветка
+- Скачано приложение, разбитое на несколько компонентов
+- Т.к. на актуальных версиях приложение не запускается - были сделаны изменения в конфигах
+- Подключаемся к докер-хосту
+	```
+	eval $(docker-machine env docker-host)
+	```
+
+- MongoDB скачано более ранней версии
+	```
+	docker pull mongo:3.1.8
+	```
+
+- В requirements.txt в post.py добавлено
+	```
+	Jinja2==2.3
+	```
+
+- В comment изменен докерфайл (написаны только измененные части)
+	```
+	FROM ruby:2.7
+	RUN apt-get update -qq && apt-get install -y build-essential && gem install bundler -v 2.4.22
+
+	RUN bundle update --bundler
+	```
+
+- В ui изменен докерфайл
+	```
+	FROM ruby:2.7
+	RUN apt-get update -qq && apt-get install -y build-essential && gem install bundler -v 1.17.2
+
+	RUN bundle update --bundler
+	```
+
+- Проверен запуск контейнеров с другими алиасами не пересобирая образ
+Использована опция "-e, --env Set environment variables" в docker run
+
+	```
+	docker run -d --network=reddit --network-alias=post_db_new --network-alias=comment_db_new mongo:latest
+	docker run -d --network=reddit -e POST_DATABASE_HOST=post_db_new -e POST_DATABASE=posts_new --network-alias=post_new tyatyushkin/post:1.0
+	docker run -d --network=reddit -e COMMENT_DATABASE_HOST=comment_db_new -e ENV COMMENT_DATABASE=comments_new --network-alias=comment_new tyatyushkin/comment:1.0
+	docker run -d --network=reddit -e  POST_SERVICE_HOST=post_new -e COMMENT_SERVICE_HOST=comment_new -p 9292:9292 tyatyushkin/ui:1.0
+	```
+
+- Собран образ используя alpine
+	```
+	docker build -t nighte1f/ui:3.0 ./ui --file ui/Dockerfile3
+	```
+
+- Создан docker volume
+	```
+	docker volume create reddit_db
+	```
+- Перезапущены и проверены контейнеры
+	```
+	docker kill $(docker ps -q)
+
+	docker run -d --network=reddit --network-alias=post_db --network-alias=comment_db -v reddit_db:/data/db mongo:3.1.8
+	```
+
+
 # Homework 12/13
 - Создана новая ветка репе microservices
 - Установлен докер
