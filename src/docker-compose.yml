@@ -28,8 +28,10 @@ services:
 
 volumes:
   reddit_db:
-    name: "reddit_db"
+    #name: "reddit_db"
 
 networks:
   back_net:
+    #name: "back_net"
   front_net:
+    #name: "front_net"
