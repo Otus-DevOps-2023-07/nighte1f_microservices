@@ -4,4 +4,4 @@ services:
     command: puma --debug -w 2
   post:
     volumes:
-    - post-py:/app1
+    - ./post-py:/app1
