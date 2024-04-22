@@ -1,0 +1,35 @@
+version: '3.3'
+services:
+  post_db:
+    image: mongo:3.1.8
+    volumes:
+      - reddit_db:/data/db
+    networks:
+      - back_net
+  ui:
+    build: ./ui
+    image: ${MYNAME}/ui:2.0
+    ports:
+      - ${PORT}:${PORT}/tcp
+    networks:
+      - front_net
+  post:
+    build: ./post-py
+    image: ${MYNAME}/post:${VER}
+    networks:
+      - back_net
+      - front_net
+  comment:
+    build: ./comment
+    image: ${MYNAME}/comment:${VER}
+    networks:
+      - back_net
+      - front_net
+
+volumes:
+  reddit_db:
+    name: "reddit_db"
+
+networks:
+  back_net:
+  front_net:
