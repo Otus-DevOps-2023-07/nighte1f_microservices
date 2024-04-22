@@ -29,3 +29,6 @@ vault.key
 .molecule
 .cache
 .pytest_cache
+
+# docker hw 15
+.env
