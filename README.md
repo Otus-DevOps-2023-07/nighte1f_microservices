@@ -1,6 +1,29 @@
 # nighte1f_microservices
 nighte1f microservices repository
 
+# Homework 15
+- Создана новая ветка
+- Выполнена работа с сетями докера
+- Выполнена работа проекта с несколькими сетями
+	```
+	docker network create back_net --subnet=10.0.2.0/24
+	docker network create front_net --subnet=10.0.1.0/24
+
+	docker network connect front_net post
+	docker network connect front_net comment
+	```
+
+- Запущен проект при помощи docker-compose
+	```
+	docker-compose up -d
+	docker-compose ps
+	```
+
+- Добавлены параметры в конфигурацию (создан конфиг .env)
+- Чтобы указать наименование проекта его необходимо запустить с ключим -p
+- Создан docker-compose.override.yml
+
+
 # Homework 14
 - Создана новая ветка
 - Скачано приложение, разбитое на несколько компонентов
