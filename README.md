@@ -1,6 +1,30 @@
 # nighte1f_microservices
 nighte1f microservices repository
 
+# Homework 16
+- Создана новая ветка
+- С помощью терраформа создаётся хост, на который устанавливается docker-machine
+	```
+	gitlab-ci/terraform
+	terraform apply
+
+	Из минусов - необходимо вручную удалять докер-хост при удалении конфигурации терраформа
+	docker-machine rm 'hostname'
+	```
+
+- Настроены первоначальные пайплайны
+- Добавлен раннер
+- Зерегестрирован раннер
+- Проведена работа с локальным гитом
+	```
+	git remote add gitlab http://158.160.114.137/homework/example.git
+	git push gitlab gitlab-ci-1
+	git tag 2.4.10
+	git push gitlab gitlab-ci-1 --tags
+	```
+
+- Выполнена донастройка пайплайнов
+
 # Homework 15
 - Создана новая ветка
 - Выполнена работа с сетями докера
