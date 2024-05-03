@@ -8,7 +8,7 @@ services:
       - back_net
 
   ui:
-    build: ./ui
+    #build: ./ui
     image: ${MYNAME}/ui
     ports:
       - ${PORT}:${PORT}/tcp
@@ -16,67 +16,67 @@ services:
       - front_net
 
   post:
-    build: ./post-py
+    #build: ./post-py
     image: ${MYNAME}/post
     networks:
       - back_net
       - front_net
 
   comment:
-    build: ./comment
+    #build: ./comment
     image: ${MYNAME}/comment
     networks:
       - back_net
       - front_net
 
-  # prometheus:
-  #   image: ${MYNAME}/prometheus
-  #   ports:
-  #   - '9090:9090'
-  #   volumes:
-  #   - prometheus_data:/prometheus
-  #   command: # Передаем доп параметры в командной строке
-  #   - '--config.file=/etc/prometheus/prometheus.yml'
-  #   - '--storage.tsdb.path=/prometheus'
-  #   - '--storage.tsdb.retention=1d' # Задаем время хранения метрик в 1 день
-  #   networks:
-  #     - back_net
-  #     - front_net
+  prometheus:
+    image: ${MYNAME}/prometheus
+    ports:
+    - '9090:9090'
+    volumes:
+    - prometheus_data:/prometheus
+    command: # Передаем доп параметры в командной строке
+    - '--config.file=/etc/prometheus/prometheus.yml'
+    - '--storage.tsdb.path=/prometheus'
+    - '--storage.tsdb.retention=1d' # Задаем время хранения метрик в 1 день
+    networks:
+      - back_net
+      - front_net
 
-  # node-exporter:
-  #   image: prom/node-exporter:v1.1.1
-  #   user: root
-  #   volumes:
-  #     - /proc:/host/proc:ro
-  #     - /sys:/host/sys:ro
-  #     - /:/rootfs:ro
-  #   networks:
-  #     - back_net
-  #     - front_net
-  #   command:
-  #     - '--path.procfs=/host/proc'
-  #     - '--path.sysfs=/host/sys'
-  #     - '--collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc)($$|/)"'
+  node-exporter:
+    image: prom/node-exporter:v1.1.1
+    user: root
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    networks:
+      - back_net
+      - front_net
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc)($$|/)"'
 
-  # mongodb-exporter:
-  #   image: percona/mongodb_exporter:0.40
-  #   environment:
-  #     - MONGODB_URI=mongodb://post_db:27017
-  #   ports:
-  #     - "9216:9216"
-  #   networks:
-  #     - back_net
-  #     - front_net
+  mongodb-exporter:
+    image: percona/mongodb_exporter:0.40
+    environment:
+      - MONGODB_URI=mongodb://post_db:27017
+    ports:
+      - "9216:9216"
+    networks:
+      - back_net
+      - front_net
 
-  # blackbox:
-  #   image: ${MYNAME}/blackbox
-  #   ports:
-  #     - '9115:9115'
-  #   command:
-  #     - '--config.file=/config/blackbox.yml'
-  #   networks:
-  #   - back_net
-  #   - front_net
+  blackbox:
+    image: ${MYNAME}/blackbox
+    ports:
+      - '9115:9115'
+    command:
+      - '--config.file=/config/blackbox.yml'
+    networks:
+    - back_net
+    - front_net
 
 volumes:
   reddit_db:
