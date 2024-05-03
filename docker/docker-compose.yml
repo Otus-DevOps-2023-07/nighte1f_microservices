@@ -38,20 +38,20 @@ services:
     networks:
       - back_net
       - front_net
-  node-exporter:
-    image: prom/node-exporter:v1.1.1
-    user: root
-    volumes:
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /:/rootfs:ro
-    networks:
-      - back_net
-      - front_net
-    command:
-      - '--path.procfs=/host/proc'
-      - '--path.sysfs=/host/sys'
-      - '--collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc)($$|/)"'
+  # node-exporter:
+  #   image: prom/node-exporter:v1.1.1
+  #   user: root
+  #   volumes:
+  #     - /proc:/host/proc:ro
+  #     - /sys:/host/sys:ro
+  #     - /:/rootfs:ro
+  #   networks:
+  #     - back_net
+  #     - front_net
+  #   command:
+  #     - '--path.procfs=/host/proc'
+  #     - '--path.sysfs=/host/sys'
+  #     - '--collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc)($$|/)"'
   # mongodb-exporter:
   #   image: percona/mongodb_exporter:0.40
   #   environment:
