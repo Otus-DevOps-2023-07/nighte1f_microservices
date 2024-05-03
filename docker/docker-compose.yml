@@ -52,15 +52,15 @@ services:
       - '--path.procfs=/host/proc'
       - '--path.sysfs=/host/sys'
       - '--collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc)($$|/)"'
-  mongodb-exporter:
-    image: percona/mongodb_exporter:0.40
-    environment:
-      - MONGODB_URI=mongodb://post_db:27017
-    ports:
-      - "9216:9216"
-    networks:
-      - back_net
-      - front_net
+  # mongodb-exporter:
+  #   image: percona/mongodb_exporter:0.40
+  #   environment:
+  #     - MONGODB_URI=mongodb://post_db:27017
+  #   ports:
+  #     - "9216:9216"
+  #   networks:
+  #     - back_net
+  #     - front_net
 
   # blackbox:
   #   image: ${MYNAME}/blackbox
