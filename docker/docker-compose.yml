@@ -62,15 +62,15 @@ services:
       - back_net
       - front_net
 
-  blackbox:
-    image: ${MYNAME}/blackbox
-    ports:
-      - '9115:9115'
-    command:
-      - '--config.file=/config/blackbox.yml'
-    networks:
-    - back_net
-    - front_net
+  # blackbox:
+  #   image: ${MYNAME}/blackbox
+  #   ports:
+  #     - '9115:9115'
+  #   command:
+  #     - '--config.file=/config/blackbox.yml'
+  #   networks:
+  #   - back_net
+  #   - front_net
 
 volumes:
   reddit_db:
