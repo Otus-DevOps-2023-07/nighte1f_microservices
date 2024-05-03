@@ -6,6 +6,7 @@ services:
       - reddit_db:/data/db
     networks:
       - back_net
+
   ui:
     build: ./ui
     image: ${MYNAME}/ui
@@ -13,31 +14,35 @@ services:
       - ${PORT}:${PORT}/tcp
     networks:
       - front_net
+
   post:
     build: ./post-py
     image: ${MYNAME}/post
     networks:
       - back_net
       - front_net
+
   comment:
     build: ./comment
     image: ${MYNAME}/comment
     networks:
       - back_net
       - front_net
-  prometheus:
-    image: ${MYNAME}/prometheus
-    ports:
-    - '9090:9090'
-    volumes:
-    - prometheus_data:/prometheus
-    command: # Передаем доп параметры в командной строке
-    - '--config.file=/etc/prometheus/prometheus.yml'
-    - '--storage.tsdb.path=/prometheus'
-    - '--storage.tsdb.retention=1d' # Задаем время хранения метрик в 1 день
-    networks:
-      - back_net
-      - front_net
+
+  # prometheus:
+  #   image: ${MYNAME}/prometheus
+  #   ports:
+  #   - '9090:9090'
+  #   volumes:
+  #   - prometheus_data:/prometheus
+  #   command: # Передаем доп параметры в командной строке
+  #   - '--config.file=/etc/prometheus/prometheus.yml'
+  #   - '--storage.tsdb.path=/prometheus'
+  #   - '--storage.tsdb.retention=1d' # Задаем время хранения метрик в 1 день
+  #   networks:
+  #     - back_net
+  #     - front_net
+
   # node-exporter:
   #   image: prom/node-exporter:v1.1.1
   #   user: root
@@ -52,6 +57,7 @@ services:
   #     - '--path.procfs=/host/proc'
   #     - '--path.sysfs=/host/sys'
   #     - '--collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc)($$|/)"'
+
   # mongodb-exporter:
   #   image: percona/mongodb_exporter:0.40
   #   environment:
@@ -61,6 +67,7 @@ services:
   #   networks:
   #     - back_net
   #     - front_net
+
   # blackbox:
   #   image: ${MYNAME}/blackbox
   #   ports:
