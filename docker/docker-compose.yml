@@ -61,7 +61,6 @@ services:
   #   networks:
   #     - back_net
   #     - front_net
-
   # blackbox:
   #   image: ${MYNAME}/blackbox
   #   ports:
