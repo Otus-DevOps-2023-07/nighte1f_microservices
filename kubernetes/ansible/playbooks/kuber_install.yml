@@ -1,0 +1,66 @@
+---
+- name: install kuber tools
+  hosts: all
+  become: true
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  tasks:
+  - name: adding ubuntu to docker group
+    user:
+      name: ubuntu
+      groups: docker
+      append: yes
+
+  - name: install pip
+    apt:
+      name: python3-pip
+      state: latest
+
+  - name: Install Docker Module for Python
+    pip:
+      name: docker
+      executable: pip3
+
+  - name: Install required packages
+    apt:
+      name:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - gnupg
+      state: present
+      update_cache: yes
+
+  - name: create required directory for key
+    file:
+      path: /etc/apt/keyrings
+      state: directory
+      mode: '0755'
+
+  - name: download kuber keys
+    apt_key:
+      url: https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key
+      state: present
+
+  - name: add kuber repo
+    apt_repository:
+      repo: deb https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /
+      state: present
+
+  - name: install kuber tools
+    apt:
+      name:
+        - kubelet
+        - kubeadm
+        - kubectl
+      state: present
+      update_cache: yes
+
+  - name: hold kuber packages
+    dpkg_selections:
+      name: "{{ item }}"
+      selection: hold
+    loop:
+      - kubelet
+      - kubeadm
+      - kubectl
