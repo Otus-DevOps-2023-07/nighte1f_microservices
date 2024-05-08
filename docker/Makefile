@@ -13,17 +13,17 @@ build_post-py:
 build_comment:
 	export USER_NAME=$(USER_NAME) && cd ../src/comment && bash docker_build.sh
 
-build_prometheus:
-	export USER_NAME=$(USER_NAME) && cd ../monitoring/prometheus && docker build -t $(USER_NAME)/prometheus .
+# build_prometheus:
+# 	export USER_NAME=$(USER_NAME) && cd ../monitoring/prometheus && docker build -t $(USER_NAME)/prometheus .
 
-build_blackbox:
-	export USER_NAME=$(USER_NAME) && cd ../monitoring/blackbox_exporter && docker build -t $(USER_NAME)/blackbox .
+# build_blackbox:
+# 	export USER_NAME=$(USER_NAME) && cd ../monitoring/blackbox_exporter && docker build -t $(USER_NAME)/blackbox .
 
 .PHONY: push
 push:
 	docker login
-	docker push $(USER_NAME)/ui
-	docker push $(USER_NAME)/post
-	docker push $(USER_NAME)/comment
-	docker push $(USER_NAME)/prometheus
-	docker push $(USER_NAME)/blackbox
+	docker push $(USER_NAME)/ui:logging
+	docker push $(USER_NAME)/post:logging
+	docker push $(USER_NAME)/comment:logging
+#	docker push $(USER_NAME)/prometheus
+#	docker push $(USER_NAME)/blackbox

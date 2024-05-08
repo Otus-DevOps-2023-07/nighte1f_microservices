@@ -1,6 +1,71 @@
 # nighte1f_microservices
 nighte1f microservices repository
 
+# Homework 18
+- Создана новая ветка
+- Поднята инфа с помощью терраформа
+- Скачана новая версия приложения
+- Созданы новые докер образы
+- Создан отдельный compose файл для логирования
+- Создан отдельный образ для fluentd (сборка образа была изменена на корректную)
+	```
+	FROM fluent/fluentd:v1.16.2-1.1
+	USER root
+	RUN gem uninstall -I elasticsearch && gem install elasticsearch -v 7.17.0
+	RUN gem install fluent-plugin-elasticsearch --no-document --version 5.0.3
+	RUN gem install fluent-plugin-grok-parser --no-document --version 2.6.2
+	ADD fluent.conf /fluentd/etc
+	```
+
+- Прозведена работа с кибаной
+- Добавлены фильтры
+- Добавлены фильтры для неструктурированых логов
+- Добавлены фильтры с помощью grok-шаблонов (изменены на корректные для свежей версии)
+	```
+	<filter service.ui>
+	  @type parser
+	  <parse>
+		@type grok
+		<grok>
+		  pattern %{RUBY_LOGGER}
+		</grok>
+	  </parse>
+	  key_name log
+	</filter>
+
+	<filter service.ui>
+	  @type parser
+	  <parse>
+		@type grok
+		<grok>
+		  pattern service=%{WORD:service} \| event=%{WORD:event} \| request_id=%{GREEDYDATA:request_id} \| message='%{GREEDYDATA:message}'
+		</grok>
+	  </parse>
+	  key_name message
+	  reserve_data true
+	</filter>
+	```
+
+- Произведена работа с zipkin
+- Запуск проекта
+	```
+	cd logging/infra/terraform
+	terraform apply --auto-approve=true
+	eval $(docker-machine env logging)
+	cd docker
+	make
+	make push
+	docker-compose up -d
+	docker-compose -f docker-compose-logging.yml up -d
+	```
+
+- Проверка проекта
+	```
+	'внешний адрес':9292 - reddit
+	'внешний адрес':5601 - kibana
+	'внешний адрес':9411 - zipkin
+	```
+
 # Homework 17
 - Создана новая ветка
 - Резвернута вм с помощью терраформа
