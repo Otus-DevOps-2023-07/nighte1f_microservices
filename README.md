@@ -1,6 +1,125 @@
 # nighte1f_microservices
 nighte1f microservices repository
 
+# Homework 20
+- Создана новая ветка
+- Установлен миникуб
+	```
+	minikube start
+	kubectl get po -A
+	```
+
+- Создан новый кластер
+	```
+	kubectl config set-cluster 'cluster_name'
+	kubectl config set-credentials 'user_name'
+	kubectl config set-context context_name \
+	--cluster=cluster_name \
+	--user=user_name
+	kubectl config use-context context_name
+	```
+
+- Текущий контекст
+	```
+	kubectl config current-context
+	```
+
+- Все контексты
+	```
+	kubectl config get-contexts
+	```
+- Созданы и запущены деплои
+	```
+	kubectl apply -f ./kubernetes/reddit
+	```
+
+- Проверен проброс портов
+	```
+	kubectl get pods --selector component=ui
+	kubectl port-forward <pod-name> 8080:9292
+	```
+
+- Созданы и запущеный сервисы
+	```
+	kubectl apply -f 'service_name'.yml
+	```
+
+- Добавлен nodePort для ui (почему-то не хочет работать при использовании докера)
+	```
+	minikube service ui
+	minikube service list
+	```
+
+-UPD Переделан миникуб с использованием virtualbox (В ДЕФОЛТЕ ВСЕ ЖЕ ИСПОЛЬЗУЕТ ДОКЕР)
+	```
+	Удаляем предыдущий
+	minikube delete
+	minikube start --vm-driver=virtualbox
+
+	!!! Если ругается на KVM - стопаем его и запускаем заново миникуб
+	lsmod | grep kvm
+	sudo rmmod 'kvm_name'
+	```
+
+- Просмотрены аддоны
+	```
+	minikube addons list
+	```
+
+- Включаем аддон dashboard
+	```
+	minikube addons enable dashboard
+	```
+
+- Т.к. он требует наличия аддона metrics-server то включаем и его
+	```
+	minikube addons enable metrics-server
+	```
+
+- Смотрим в каком namespace находится аддон
+	```
+	minikube service list
+	> kubernetes-dashboard
+	```
+
+- Получаем инфу об объектах
+	```
+	kubectl get all -n kubernetes-dashboard --selector k8s-app=kubernetes-dashboard
+	```
+
+- Заходим в дашборд
+	```
+	minikube dashboard --url
+	```
+
+- Посмотрены возможности дашборда
+- Создан новый namespace
+	```
+	kubectl apply -f dev-namespace.yml
+	```
+
+- Запущено приложение в новом namespace
+	```
+	kubectl apply -n dev -f
+	minikube service ui -n dev
+	```
+
+- Развернут кластер в YC
+- Добавлена группа узлов
+- Произведено подключение к кластеру с локальной вм
+	```
+	yc managed-kubernetes cluster get-credentials <cluster-name> --external
+	```
+
+- Задеплоено приложение в кластер YC в dev namespace
+	```
+	kubectl apply -f ./kubernetes/reddit/dev-namespace.yml
+	kubectl apply -f ./kubernetes/reddit/ -n dev
+
+	kubectl get nodes -o wide
+	kubectl describe service ui -n dev | grep NodePort
+	```
+
 # Homework 19
 - Создана инфра с помощь терраформа и ансибла
 - Созданы deployment конфиги
