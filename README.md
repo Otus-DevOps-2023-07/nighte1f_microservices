@@ -1,6 +1,75 @@
 # nighte1f_microservices
 nighte1f microservices repository
 
+# Homework 19
+- Создана инфра с помощь терраформа и ансибла
+- Созданы deployment конфиги
+- Создан кластер кубера, т.к. используется свежая версия пришлось устанавливать cri-docker на обоих нодах
+	```
+	wget https://github.com/Mirantis/cri-dockerd/releases/download/v0.3.7/cri-dockerd_0.3.7.3-0.ubuntu-bionic_amd64.deb
+	apt-get install ./cri-dockerd_0.3.7.3-0.ubuntu-bionic_amd64.deb -y
+	```
+
+- Инициализация кластера
+	```
+	kubeadm init --apiserver-cert-extra-sans=158.160.127.173 --apiserver-advertise-address=0.0.0.0 --control-plane-endpoint=158.160.127.173 --pod-network-cidr=10.244.0.0/16 --cri-socket unix:///var/run/cri-dockerd.sock
+	kubeadm join 158.160.127.173:6443 --token 96jyz9.klmqnfwlyfk2mus2 --discovery-token-ca-cert-hash sha256:'HASH' --cri-socket unix:///var/run/cri-dockerd.sock
+	```
+
+- На мастер ноде установлен сетевой плагин
+	```
+	kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.27.3/manifests/tigera-operator.yaml
+	curl https://raw.githubusercontent.com/projectcalico/calico/v3.27.3/manifests/custom-resources.yaml -O
+	!!!изменяем сеть в custom-resources.yaml 10.244.0.0/16
+	kubectl create -f custom-resources.yaml
+	Смотрим чтобы всё выполнилось
+	watch kubectl get pods -n calico-system
+	```
+
+- Устанавливаем kubectl локально и добавляем конфиг кубера (если работаете под рутом - cat /etc/kubernetes/admin.conf (мастер нода))
+- Применяем деплои
+	```
+	kubectl --insecure-skip-tls-verify --kubeconfig 'path to conf' apply -f comment-deployment.yml
+	kubectl --insecure-skip-tls-verify --kubeconfig 'path to conf' apply -f post-deployment.yml
+	kubectl --insecure-skip-tls-verify --kubeconfig 'path to conf' apply -f ui-deployment.yml
+	kubectl --insecure-skip-tls-verify --kubeconfig 'path to conf' apply -f mongo-deployment.yml
+	```
+
+- Проверяем что всё запустилось
+	```
+	kubectl --insecure-skip-tls-verify --kubeconfig 'path to conf' get pods --output=wide
+	```
+
+- Так же можно проверить само приложение запустив трафик на контейнера
+	```
+	На мастер ноде
+	kubectl port-forward 'ui container name' --address 0.0.0.0 9292:9292
+	```
+
+- Полезные команды
+	```
+	kubectl get nodes - показывает ноды кластера
+	kubectl describe node 'node name' - инфа о ноде
+	kubectl get pods - показывает поды
+	kubectl describe pod 'pode name' - инфа о поде
+	kubectl delete node 'node name' - удалить ноду
+	kubeadm reset - сброс ВСЕХ настроек кластера
+	```
+
+- Запуск проекта
+	```
+	cd kubernetes/terraform
+	terraform init
+	terraform apply
+	cd ../ansible
+	ansible-playbook playbooks/kuber_install.yml
+	cd ../reddid
+	kubectl --insecure-skip-tls-verify --kubeconfig 'path to conf' apply -f comment-deployment.yml
+	kubectl --insecure-skip-tls-verify --kubeconfig 'path to conf' apply -f post-deployment.yml
+	kubectl --insecure-skip-tls-verify --kubeconfig 'path to conf' apply -f ui-deployment.yml
+	kubectl --insecure-skip-tls-verify --kubeconfig 'path to conf' apply -f mongo-deployment.yml
+	```
+
 # Homework 18
 - Создана новая ветка
 - Поднята инфа с помощью терраформа
