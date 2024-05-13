@@ -1,6 +1,46 @@
 # nighte1f_microservices
 nighte1f microservices repository
 
+# Homework 21
+- Создана новая ветка
+- Включен/отключен kube-dns
+	```
+	kubectl scale deployment --replicas 0 -n kube-system kube-dns-autoscaler
+	kubectl scale deployment --replicas 0 -n kube-system kube-dns
+	kubectl scale deployment --replicas 1 -n kube-system kube-dns-autoscaler
+	```
+
+- Проверена конфигурация с LoadBalanceом
+	```
+	type: LoadBalancer
+	ports:
+	- port: 80 # Порт, который будет открыт на балансировщике
+	nodePort: 32092 # Также на ноде будет открыт порт, но нам он не нужен и его можно даже убрать
+	protocol: TCP
+	targetPort: 9292 # Порт POD-а
+
+	kubectl get service -n dev --selector component=ui
+	```
+
+- Проверена конфигурация с Ingress
+- Установка производилась через helm
+	```
+	helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+	helm install ingress-nginx ingress-nginx/ingress-nginx
+
+	kubectl get ingress -n dev
+	```
+
+- Создан и загружен серт
+	```
+	openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout tls.key -out tls.crt -subj "/CN='ingress-ip'"
+	kubectl create secret tls ui-ingress --key tls.key --cert tls.crt -n dev
+	kubectl describe secret ui-ingress -n dev
+	```
+
+- Создана и проверена NetworkPolicy
+- Создано хранилице для БД
+
 # Homework 20
 - Создана новая ветка
 - Установлен миникуб
