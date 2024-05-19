@@ -1,6 +1,75 @@
 # nighte1f_microservices
 nighte1f microservices repository
 
+# Homework 22
+- Создана новая ветка
+- Установлен ingress через helm 3
+	```
+	helm install ingress-nginx ingress-nginx --repo https://kubernetes.github.io/ingress-nginx \
+	--namespace ingress-nginx --create-namespace
+	```
+
+- Созданы чарты
+- Перенесены шаблоны
+- По непонятной причине ингрес не создёт внешние адреса, поэтому в была изменена конфигурация ингреса с использованием nip.io. Поэтому попасть на вебморду пода можно по его днс
+	```
+	host: {{ .Release.Name }}.ui.158.160.129.214.nip.io
+	```
+
+- Созданы зависимости
+- Т.к. приложение не работает со свежей версией mongodb - для него создан чарт
+	```
+	helm dep update
+	helm install reddit-test ./reddit
+	helm upgrade reddit-test ./reddit
+	```
+
+- Установлен гитлаб в кластере k8s
+	```
+	helm upgrade --install gitlab gitlab/gitlab \
+	--namespace gitlab --create-namespace \
+	--timeout 600s \
+	--set global.hosts.domain=otus.example.ru \
+	--set global.hosts.externalIP=158.160.159.53 \
+	--set global.hosts.https=false \
+	--set global.ingress.configureCertmanager=true \
+	--set certmanager-issuer.email=nighte1f@otus.example.ru \
+	--set global.kas.enabled=true \
+	--set global.edition=ce \
+	--set global.time_zone=Europe/Moscow \
+	--set postgresql.image.tag=13.6.0 \
+	--set gitlab-runner.runners.privileged=true
+	```
+
+- Выцеплен пас рута
+	```
+	kubectl -n gitlab get secret gitlab-gitlab-initial-root-password -ojsonpath='{.data.password}' | base64 --decode ; echo
+	```
+
+- Установлен раннер
+	```
+	config: |
+    [[runners]]
+      environment = ["GIT_SSL_NO_VERIFY=1"]
+      [runners.kubernetes]
+        namespace = "{{.Release.Namespace}}"
+        image = "alpine"
+        tls_verify = false
+
+	helm install -n gitlab gitlab-runner-ui -f values.yaml gitlab/gitlab-runner --version 0.64.0
+	```
+
+- Решена проблема резолва хоста добавлением отдельного конфига
+	```
+	kubectl replace -f custom-zone.yaml
+	kubectl -n kube-system scale deployment coredns --replicas=0
+	kubectl -n kube-system scale deployment coredns --replicas=2
+	kubectl get pod -n kube-system | grep dns
+	kubectl -n gitlab exec gitlab-runner-ui-5df9774fdf-rcmxj -it -- nslookup gitlab.otus.example.ru
+	```
+
+- Написаны и протестированы пайпланы
+
 # Homework 21
 - Создана новая ветка
 - Включен/отключен kube-dns
