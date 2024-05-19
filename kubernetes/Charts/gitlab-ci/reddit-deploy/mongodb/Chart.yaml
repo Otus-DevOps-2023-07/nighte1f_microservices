@@ -1,8 +1,0 @@
----
-name: mongodb
-version: 1.0.0
-description: OTUS reddit application UI
-maintainers:
-  - name: nighte1f
-    email: k.butin@internet.ru
-appVersion: 1.0

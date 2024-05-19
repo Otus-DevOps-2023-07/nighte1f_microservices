@@ -35,3 +35,4 @@ vault.key
 
 # k8s 4
 /kubernetes/Charts/gitlab-ci/
+/kubernetes/Charts/gitlab-ci/reddit-deploy
