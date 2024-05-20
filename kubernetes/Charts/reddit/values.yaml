@@ -1,0 +1,20 @@
+comment:
+  image:
+    repository: nighte1f/comment
+    tag: latest
+  service:
+    externalPort: 9292
+
+post:
+  image:
+    repository: nighte1f/post
+    tag: latest
+  service:
+    externalPort: 5000
+
+ui:
+  image:
+    repository: nighte1f/ui
+    tag: latest
+  service:
+    externalPort: 9292
